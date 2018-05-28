@@ -1,0 +1,70 @@
+.title {
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 15px ;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(9, auto);
+  grid-gap: 0px;
+  width: 322px;
+  border: 2px solid black;
+  margin: auto;
+  
+}
+
+.gridSquare {
+  background: #fff;
+  border: 1px solid #ccc;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 34px;
+  width: 34px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+}
+
+.provided {
+  color: black;
+}
+
+.correct, .entered {
+  color: blue;
+}
+
+.wrong {
+  color: red;
+}
+
+.guess {
+  color: tan;
+}
+
+.revealed {
+  color: green;
+}
+
+.selected {
+  border: 3px solid green;
+  line-height: 30px;
+  height: 30px;
+  width: 30px;
+}
+
+.odd {
+  background-color: #91a6c9;
+}
+
+.buttons {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.buttons > button {
+  margin-right: 5px;
+}
