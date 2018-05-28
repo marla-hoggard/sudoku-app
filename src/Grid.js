@@ -1,33 +1,19 @@
 import React from 'react';
 import Square from './Square';
+import OptionsSquare from './OptionsSquare';
 import './index.css'
 import {EVEN_GRIDS} from './constants'
 
 export default class Grid extends React.Component {
 	renderSquare(i) {
-		let classes = EVEN_GRIDS.includes(i) ? "even" : "odd";
-
-		let status = this.props.gridStatus[i];
+		let classes = EVEN_GRIDS.includes(i) ? "" : "odd";
+		const status = this.props.gridStatus[i];
 		if (!this.props.revealErrors && (status == 'correct' || status == 'wrong')) {
 			classes += " entered";
 		}
 		else if (status) {
 			classes += ' ' + status;
 		}
-
-		// if (this.props.revealErrors) {
-		// 	this.props.gridStatus[i] == 'provided' ? classes += " provided" :
-		// 	this.props.gridStatus[i] == 'guess' ? classes += " guess" :
-		// 	this.props.gridStatus[i] == 'revealed' ? classes += " revealed" :
-		// 	this.props.puzzle[i] == this.props.solution[i] ? 
-		// 		classes += " correct" : classes += " wrong";
-		// }
-		// else {
-		// 	this.props.gridStatus[i] == 'provided' ? classes += " provided" :
-		// 	this.props.gridStatus[i] == 'guess' ? classes += " guess" : 
-		// 	this.props.gridStatus[i] == 'revealed' ? classes += " revealed" :
-		// 		classes += " entered"
-		// }
 		
 		if (this.props.selected == i) {
 			classes += " selected"
@@ -41,11 +27,34 @@ export default class Grid extends React.Component {
 	        onClick={() => this.props.onClick(i)}
 	      />
 	    );
-	  }
+	}
+
+	renderOptionsSquare(i) {
+		let classes = "gridSquare options";
+		if (!EVEN_GRIDS.includes(i)) {
+			classes += " odd";
+		}
+		if (this.props.selected == i) {
+			classes += " selected";
+		}
+		return (
+			<OptionsSquare 
+				key={i}
+				classes={classes}
+				onClick={() => this.props.onClick(i)}
+				options={this.props.options[i]}
+			/>
+		);
+	}
 
 	render() {
 		let grid = this.props.puzzle.map((value,index) => {
-			return this.renderSquare(index);
+			if (value || this.props.options[index] == null) {
+				return this.renderSquare(index);
+			}
+			else {
+				return this.renderOptionsSquare(index);
+			}
 		});
 		return (
 			<div className="grid" 

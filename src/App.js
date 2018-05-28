@@ -10,8 +10,11 @@ export default class App extends React.Component {
 			puzzle: Array(81).fill(null),
 			solution: Array(81).fill(null),
 			gridStatus: Array(81).fill(null),
+			options: Array(81).fill(null),
 			selected: null,
 			revealErrors: false,
+			guessMode: false,
+			optionsMode: false,
 		};
 		//this.provided = Array(81).fill(null);
 
@@ -65,6 +68,9 @@ export default class App extends React.Component {
 		solution = solution.map(value => +value + 1);
 
 		let gridStatus = puzzle.map(value => value != null ? 'provided' : null);
+		let options = this.state.options.slice();
+		options[2] = [1,4,8];
+		options[5] = [4,9];
 
 		console.log("puzzle");
 		console.log(puzzle);
@@ -77,6 +83,7 @@ export default class App extends React.Component {
 			puzzle,
 			solution,
 			gridStatus,
+			options,
 		});
 
 	}
@@ -122,6 +129,7 @@ export default class App extends React.Component {
 					gridStatus={this.state.gridStatus}
 					selected={this.state.selected}
 					revealErrors={this.state.revealErrors}
+					options={this.state.options}
 					onClick={(i) => this.handleClick(i)}
 					onKeyDown={(e) => this.handleKeyPress(e)} />
 				<div className="buttons">
