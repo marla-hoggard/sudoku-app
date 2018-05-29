@@ -48,20 +48,27 @@ export default class Grid extends React.Component {
 	}
 
 	render() {
-		let grid = this.props.puzzle.map((value,index) => {
-			if (value || this.props.options[index] == null) {
-				return this.renderSquare(index);
-			}
-			else {
-				return this.renderOptionsSquare(index);
-			}
-		});
-		return (
-			<div className="grid" 
-				onKeyDown={this.props.onKeyDown}
-				tabIndex="0">
-				{grid}
-			</div>
-		);
+		if (this.props.gameOver) {
+			return (
+				<div className="grid game-over">You win!</div>
+			);
+		}
+		else {
+			let grid = this.props.puzzle.map((value,index) => {
+				if (value || this.props.options[index] == null) {
+					return this.renderSquare(index);
+				}
+				else {
+					return this.renderOptionsSquare(index);
+				}
+			});
+			return (
+				<div className="grid" 
+					onKeyDown={this.props.onKeyDown}
+					tabIndex="0">
+					{grid}
+				</div>
+			);
+		}
 	}
 }
