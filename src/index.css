@@ -120,6 +120,16 @@ button:disabled {
   text-decoration: line-through;
   cursor: not-allowed;
 }
+
+.complete {
+  background-color: green;
+  color: #eeeeee;
+}
+
+.too-many {
+  background-color: red;
+  color: #eeeeee;
+}
 .button-row {
   margin-top: 10px;
 }

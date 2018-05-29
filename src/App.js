@@ -17,7 +17,7 @@ export default class App extends React.Component {
 			revealErrors: false,
 			optionsMode: false,
 			cheater: false,
-			disabled: Array(9).fill(false),
+			disabled: Array(9).fill(null),
 		};
 	}
 
@@ -34,9 +34,13 @@ export default class App extends React.Component {
 				let disabled = this.state.disabled.slice();
 				puzzle[selected] = null;
 				gridStatus[selected] = null;
-				if (countInstances(puzzle,num) < 9) {
-						disabled[num-1] = false;
-					}
+				const count = countInstances(puzzle,num);
+				if (count < 9) {
+					disabled[num-1] = null;
+				}
+				else if (count == 9) {
+					disabled[num-1] = 'complete';
+				}
 				this.setState({
 					selected,
 					puzzle,
@@ -92,16 +96,24 @@ export default class App extends React.Component {
 						puzzle[square] = +e.key;
 						gridStatus[square] = puzzle[square] == this.state.solution[square] ?
 							'correct' : 'wrong';
-						if (countInstances(puzzle,+e.key) >= 9) {
-							disabled[e.key-1] = true;
+						const count = countInstances(puzzle,+e.key);
+						if (count == 9) {
+							disabled[e.key-1] = 'complete';
+						}
+						else if (count > 9) {
+							disabled[e.key-1] = 'too-many';
 						}
 					}
 					else if (e.key == 'Backspace') {
 						let num = puzzle[square];
 						puzzle[square] = null;
 						gridStatus[square] = null;
-						if (countInstances(puzzle,num) < 9) {
-							disabled[num-1] = false;
+						const count = countInstances(puzzle,num)
+						if (count < 9) {
+							disabled[num-1] = null;
+						}
+						else if (count == 9) {
+							disabled[num-1] = 'complete';
 						}
 					}
 					this.setState({
@@ -169,7 +181,7 @@ export default class App extends React.Component {
 			penMode: 'pen', //pen vs notes
 			optionsMode: false,
 			cheater: false,
-			disabled: Array(9).fill(false),
+			disabled: Array(9).fill(null),
 		});
 
 	}
@@ -195,8 +207,12 @@ export default class App extends React.Component {
 					gridStatus[square] = puzzle[square] == this.state.solution[square] ?
 						'correct' : 'wrong';
 					let disabled = this.state.disabled.slice();
-					if (countInstances(puzzle,i) >= 9) {
-						disabled[i-1] = true;
+					const count = countInstances(puzzle,i);
+					if (count == 9) {
+						disabled[i-1] = 'complete';
+					}
+					else if (count > 9) {
+						disabled[i-1] = 'too-many';
 					}
 					this.setState({
 						puzzle,
@@ -253,8 +269,12 @@ export default class App extends React.Component {
 			let newStatus = gridStatus.slice();
 			newStatus[selected] = 'revealed';
 			let newDisabled = disabled.slice();
-			if (countInstances(newPuzzle,newPuzzle[selected]) >= 9) {
-				newDisabled[newPuzzle[selected]-1] = true;
+			const count = countInstances(newPuzzle,newPuzzle[selected]);
+			if (count == 9) {
+				newDisabled[newPuzzle[selected]-1] = 'complete';
+			}
+			else if (count > 9) {
+				newDisabled[newPuzzle[selected]-1] = 'too-many';
 			}
 			this.setState({
 				puzzle: newPuzzle,
