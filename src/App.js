@@ -17,146 +17,9 @@ export default class App extends React.Component {
 			revealErrors: false,
 			optionsMode: false,
 			cheater: false,
-			disabled: Array(9).fill(null),
+			numComplete: Array(9).fill(null),
 		};
 	}
-
-	handleClick(i) {
-		console.log("Clicked " + i);
-		const selected = this.state.gridStatus[i] == 'provided' ? null : i;
-
-		//If in erase mode, erase visible info from cell
-		if (this.state.penMode == 'eraser' && selected != null) {
-			if (this.state.puzzle[selected]) {
-				const num = this.state.puzzle[selected];
-				let puzzle = this.state.puzzle.slice();
-				let gridStatus = this.state.gridStatus.slice();
-				let disabled = this.state.disabled.slice();
-				puzzle[selected] = null;
-				gridStatus[selected] = null;
-				const count = countInstances(puzzle,num);
-				if (count < 9) {
-					disabled[num-1] = null;
-				}
-				else if (count == 9) {
-					disabled[num-1] = 'complete';
-				}
-				this.setState({
-					selected,
-					puzzle,
-					gridStatus,
-					disabled,
-				});
-			}
-			else if (this.state.options[selected]) {
-				let options = this.state.options.slice();
-				options[selected] = null;
-				this.setState({
-					selected,
-					options,
-				});
-			}
-		}
-		else {
-			this.setState({
-				selected,
-			});
-		}
-
-	}
-
-	handleKeyPress(e) {
-		let square = this.state.selected;
-		const penMode = this.state.penMode;
-		if (square != null) {
-			if (e.key.includes('Arrow')) {
-				if ((e.key == 'ArrowRight' || e.key == 'UIKeyInputRightArrow') && square % 9 != 8) {
-					square++;
-				}
-				else if ((e.key == 'ArrowLeft' || e.key == 'UIKeyInputLeftArrow') && square % 9 != 0) {
-					square--;
-				}
-				else if ((e.key == 'ArrowUp' || e.key == 'UIKeyInputUpArrow') && square > 8) {
-					square -= 9;
-				}
-				else if ((e.key == 'ArrowDown' || e.key == 'UIKeyInputDownArrow') && square < 72) {
-					square += 9;
-				}
-				this.setState({
-					selected: square,
-				});
-			}
-			if (this.state.gridStatus[square] != 'provided') {
-				//Enter big numbers (Square)
-				if (penMode == 'pen') {
-					let puzzle = this.state.puzzle.slice();
-					let gridStatus = this.state.gridStatus.slice();
-					let disabled = this.state.disabled.slice();
-					if (e.key > 0 && e.key < 10) {
-						puzzle[square] = +e.key;
-						gridStatus[square] = puzzle[square] == this.state.solution[square] ?
-							'correct' : 'wrong';
-						const count = countInstances(puzzle,+e.key);
-						if (count == 9) {
-							disabled[e.key-1] = 'complete';
-						}
-						else if (count > 9) {
-							disabled[e.key-1] = 'too-many';
-						}
-					}
-					else if (e.key == 'Backspace') {
-						let num = puzzle[square];
-						puzzle[square] = null;
-						gridStatus[square] = null;
-						const count = countInstances(puzzle,num)
-						if (count < 9) {
-							disabled[num-1] = null;
-						}
-						else if (count == 9) {
-							disabled[num-1] = 'complete';
-						}
-					}
-					this.setState({
-						puzzle,
-						gridStatus,
-						disabled,
-					});
-				}
-				//Enter notes (OptionSquare)
-				else if (penMode == 'notes') {
-					let options = this.state.options.slice();
-					let selectedOptions = options[square];
-					if (e.key > 0 && e.key < 10) {
-						//Already some notes at square
-						if (selectedOptions) {
-							//Remove the number from the notes
-							if (selectedOptions.includes(e.key)) {
-								const index = selectedOptions.indexOf(e.key);
-								selectedOptions = selectedOptions.slice(0,index).concat(selectedOptions.slice(index+1));
-							}
-							//Add the number to the notes
-							else {
-								selectedOptions = selectedOptions.concat(e.key);
-							}
-						}
-						//Not yet notes in square
-						else {
-							selectedOptions = [e.key];
-						}
-					}
-					else if (e.key == 'Backspace') {
-						selectedOptions = null;
-					}
-					options[square] = selectedOptions;
-					this.setState({
-						options,
-					});
-				}
-			}
-		}
-		console.log(e.key);
-	}
-
 
 	newGame = () => {
 		let puzzle = Sudoku.makepuzzle();
@@ -181,71 +44,194 @@ export default class App extends React.Component {
 			penMode: 'pen', //pen vs notes
 			optionsMode: false,
 			cheater: false,
-			disabled: Array(9).fill(null),
+			numComplete: Array(9).fill(null),
 		});
 
 	}
 
+	handleClick(i) {
+		console.log("Clicked " + i);
+		const selected = this.state.gridStatus[i] == 'provided' ? null : i;
+
+		//If in erase mode, erase visible info from cell
+		if (this.state.penMode == 'eraser' && selected != null) {
+			if (this.state.puzzle[selected]) {
+				const num = this.state.puzzle[selected];
+				let puzzle = this.state.puzzle.slice();
+				let gridStatus = this.state.gridStatus.slice();
+				let numComplete = this.state.numComplete.slice();
+				puzzle[selected] = null;
+				gridStatus[selected] = null;
+				const count = countInstances(puzzle,num);
+				if (count < 9) {
+					numComplete[num-1] = null;
+				}
+				else if (count == 9) {
+					numComplete[num-1] = 'complete';
+				}
+				this.setState({
+					selected,
+					puzzle,
+					gridStatus,
+					numComplete,
+				});
+			}
+			else if (this.state.options[selected]) {
+				let options = this.state.options.slice();
+				options[selected] = null;
+				this.setState({
+					selected,
+					options,
+				});
+			}
+		}
+		else {
+			this.setState({
+				selected,
+			});
+		}
+
+	}
+
+	handleKeyPress(e) {
+		let square = this.state.selected;
+		const penMode = this.state.penMode;
+		if (square != null) {
+			if (e.key.includes('Arrow')) {
+				if (e.key.includes('Right') && square % 9 != 8) {
+					square++;
+				}
+				else if (e.key.includes('Left') && square % 9 != 0) {
+					square--;
+				}
+				else if (e.key.includes('Up') && square > 8) {
+					square -= 9;
+				}
+				else if (e.key.includes('Down') && square < 72) {
+					square += 9;
+				}
+				this.setState({
+					selected: square,
+				});
+			}
+			if (this.state.gridStatus[square] != 'provided') {
+				//Enter big numbers (Square)
+				if (e.key == 'Backspace') {
+					this.erase(square);
+				}
+				else if (e.key > 0 && e.key < 10) {
+					if (penMode == 'pen') {
+						this.penEntry(+e.key,square);
+					}
+					else if (penMode == 'notes') {
+						this.noteEntry(+e.key,square);
+					}
+				}
+			}
+		}
+		console.log(e.key);
+	}
+
+	handleNumButton(num) {
+		const square = this.state.selected;
+		const penMode = this.state.penMode;
+		if (square != null) {
+			if (this.state.gridStatus[square] != 'provided') {
+				if (penMode == 'pen') {
+					this.penEntry(num,square);
+				}
+				//Enter notes (OptionSquare)
+				else if (penMode == 'notes') {
+					this.noteEntry(num,square);
+				}
+			}
+		}
+	}
+
 	handlePenChange = (e) => {
 		const penMode = e.currentTarget.id.slice(6);
-		console.log(penMode)
 		this.setState({
 			penMode,
 		});
 	}
 
-	handleNumButton(i) {
-		const square = this.state.selected;
-		const penMode = this.state.penMode;
-		if (square != null) {
-			if (this.state.gridStatus[square] != 'provided') {
-				//Enter big numbers (Square)
-				if (penMode == 'pen') {
-					let puzzle = this.state.puzzle.slice();
-					let gridStatus = this.state.gridStatus.slice();
-					puzzle[square] = i;
-					gridStatus[square] = puzzle[square] == this.state.solution[square] ?
-						'correct' : 'wrong';
-					let disabled = this.state.disabled.slice();
-					const count = countInstances(puzzle,i);
-					if (count == 9) {
-						disabled[i-1] = 'complete';
-					}
-					else if (count > 9) {
-						disabled[i-1] = 'too-many';
-					}
-					this.setState({
-						puzzle,
-						gridStatus,
-						disabled,
-					});
-				}
-				//Enter notes (OptionSquare)
-				else if (penMode == 'notes') {
-					let options = this.state.options.slice();
-					let selectedOptions = options[square];
-					//Already some notes at square
-					if (selectedOptions) {
-						//Remove the number from the notes
-						if (selectedOptions.includes(i)) {
-							const index = selectedOptions.indexOf(i);
-							selectedOptions = selectedOptions.slice(0,index).concat(selectedOptions.slice(index+1));
-						}
-						//Add the number to the notes
-						else {
-							selectedOptions = selectedOptions.concat(i);
-						}
-					}
-					//Not yet notes in square
-					else {
-						selectedOptions = [i];
-					}
-					options[square] = selectedOptions;
-					this.setState({
-						options,
-					});
-				}
+	//num: number to enter, i: grid location
+	penEntry = (num,i) => {
+		let puzzle = this.state.puzzle.slice();
+		let gridStatus = this.state.gridStatus.slice();
+		let numComplete = this.state.numComplete.slice();
+		puzzle[i] = num;
+		gridStatus[i] = puzzle[i] == this.state.solution[i] ? 
+			'correct' : 'wrong';
+		const count = countInstances(puzzle,num);
+		if (count == 9) {
+			numComplete[num-1] = 'complete';
+		}
+		else if (count > 9) {
+			numComplete[num-1] = 'too-many';
+		}
+		this.setState({
+			puzzle,
+			gridStatus,
+			numComplete,
+		});
+	}
+	//num: number to enter, i: grid location
+	noteEntry = (num,i) => {
+		let options = this.state.options.slice();
+		let selectedOptions = options[i];
+		//Already some notes at square
+		if (selectedOptions) {
+			//Remove the number from the notes
+			if (selectedOptions.includes(num)) {
+				const index = selectedOptions.indexOf(num);
+				selectedOptions = selectedOptions.slice(0,index).concat(selectedOptions.slice(index+1));
 			}
+			//Add the number to the notes
+			else {
+				selectedOptions = selectedOptions.concat(num);
+			}
+		}
+		//Not yet notes in square
+		else {
+			selectedOptions = [num];
+		}
+		options[i] = selectedOptions;
+		this.setState({
+			options,
+		});
+	}
+
+	//Erase grid square at location i
+	erase = (i) => {
+		let puzzle = this.state.puzzle.slice();
+		let gridStatus = this.state.gridStatus.slice();
+		const num = puzzle[i];
+		//Erase a pen entry if it exists
+		if (num != null) {
+			puzzle[i] = null;
+			gridStatus[i] = null;
+			let numComplete = this.state.numComplete.slice();
+			const count = countInstances(puzzle,num);
+			if (count < 9) {
+				numComplete[num-1] = null;
+			}
+			else if (count == 9) {
+				numComplete[num-1] = 'complete';
+			}
+			this.setState({
+				puzzle,
+				gridStatus,
+				numComplete,
+			});
+		}
+		//Erase notes
+		else {
+			let options = this.state.options.slice();
+			options[i] = null;
+			this.setState({
+				options,
+			});
 		}
 	}
 
@@ -262,24 +248,24 @@ export default class App extends React.Component {
 	}
 
 	showSquare = () => {
-		const { selected, gridStatus, puzzle, solution, disabled } = this.state;
-		if (selected != null && gridStatus[selected] != 'provided') {
-			let newPuzzle = puzzle.slice();
-			newPuzzle[selected] = solution[selected];
-			let newStatus = gridStatus.slice();
-			newStatus[selected] = 'revealed';
-			let newDisabled = disabled.slice();
-			const count = countInstances(newPuzzle,newPuzzle[selected]);
+		const { selected, solution } = this.state;
+		if (selected != null && this.state.gridStatus[selected] != 'provided') {
+			let puzzle = this.state.puzzle.slice();
+			let gridStatus = this.state.gridStatus.slice();
+			let numComplete = this.state.numComplete.slice();
+			puzzle[selected] = solution[selected];
+			gridStatus[selected] = 'revealed';
+			const count = countInstances(puzzle,puzzle[selected]);
 			if (count == 9) {
-				newDisabled[newPuzzle[selected]-1] = 'complete';
+				numComplete[puzzle[selected]-1] = 'complete';
 			}
 			else if (count > 9) {
-				newDisabled[newPuzzle[selected]-1] = 'too-many';
+				numComplete[puzzle[selected]-1] = 'too-many';
 			}
 			this.setState({
-				puzzle: newPuzzle,
-				gridStatus: newStatus,
-				disabled: newDisabled,
+				puzzle,
+				gridStatus,
+				numComplete,
 			});
 		}
 	}
@@ -332,7 +318,7 @@ export default class App extends React.Component {
 					revealErrors={state.revealErrors}
 					penMode={state.penMode}
 					numButton={(i) => this.handleNumButton(i)}
-					disabled={state.disabled}
+					numComplete={state.numComplete}
 					newGame={this.newGame}
 					handlePenChange={this.handlePenChange}
 					toggleRevealErrors={this.toggleRevealErrors}

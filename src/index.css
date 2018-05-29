@@ -1,9 +1,9 @@
 .title {
-  font-family: 'Times', 'sans-serif';
+  font-family: 'Rakkas', 'cursive';
   font-size: 40px;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 15px ;
+  margin-bottom: 5px ;
 }
 
 /* Main Grid */
@@ -37,7 +37,7 @@
 .game-over {
   line-height: 370px;
   text-align: center;
-  font-family: 'Times', 'sans-serif';
+  font-family: 'Rakkas', 'cursive';
   font-size: 60px;
   font-weight: bold;
   background-color: #91a6c9;
