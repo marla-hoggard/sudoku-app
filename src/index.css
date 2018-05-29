@@ -115,6 +115,11 @@ button:active {
   background-color: #777777;
 }
 
+button:disabled {
+  background-color: #dddddd;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
 .button-row {
   margin-top: 10px;
 }

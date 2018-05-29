@@ -17,6 +17,7 @@ export default class App extends React.Component {
 			revealErrors: false,
 			optionsMode: false,
 			cheater: false,
+			disabled: Array(9).fill(false),
 		};
 	}
 
@@ -27,14 +28,20 @@ export default class App extends React.Component {
 		//If in erase mode, erase visible info from cell
 		if (this.state.penMode == 'eraser' && selected != null) {
 			if (this.state.puzzle[selected]) {
+				const num = this.state.puzzle[selected];
 				let puzzle = this.state.puzzle.slice();
 				let gridStatus = this.state.gridStatus.slice();
+				let disabled = this.state.disabled.slice();
 				puzzle[selected] = null;
 				gridStatus[selected] = null;
+				if (countInstances(puzzle,num) < 9) {
+						disabled[num-1] = false;
+					}
 				this.setState({
 					selected,
 					puzzle,
 					gridStatus,
+					disabled,
 				});
 			}
 			else if (this.state.options[selected]) {
@@ -80,18 +87,27 @@ export default class App extends React.Component {
 				if (penMode == 'pen') {
 					let puzzle = this.state.puzzle.slice();
 					let gridStatus = this.state.gridStatus.slice();
+					let disabled = this.state.disabled.slice();
 					if (e.key > 0 && e.key < 10) {
-						puzzle[square] = e.key;
+						puzzle[square] = +e.key;
 						gridStatus[square] = puzzle[square] == this.state.solution[square] ?
 							'correct' : 'wrong';
+						if (countInstances(puzzle,+e.key) >= 9) {
+							disabled[e.key-1] = true;
+						}
 					}
 					else if (e.key == 'Backspace') {
+						let num = puzzle[square];
 						puzzle[square] = null;
 						gridStatus[square] = null;
+						if (countInstances(puzzle,num) < 9) {
+							disabled[num-1] = false;
+						}
 					}
 					this.setState({
 						puzzle,
 						gridStatus,
+						disabled,
 					});
 				}
 				//Enter notes (OptionSquare)
@@ -153,6 +169,7 @@ export default class App extends React.Component {
 			penMode: 'pen', //pen vs notes
 			optionsMode: false,
 			cheater: false,
+			disabled: Array(9).fill(false),
 		});
 
 	}
@@ -177,9 +194,14 @@ export default class App extends React.Component {
 					puzzle[square] = i;
 					gridStatus[square] = puzzle[square] == this.state.solution[square] ?
 						'correct' : 'wrong';
+					let disabled = this.state.disabled.slice();
+					if (countInstances(puzzle,i) >= 9) {
+						disabled[i-1] = true;
+					}
 					this.setState({
 						puzzle,
 						gridStatus,
+						disabled,
 					});
 				}
 				//Enter notes (OptionSquare)
@@ -224,15 +246,20 @@ export default class App extends React.Component {
 	}
 
 	showSquare = () => {
-		const { selected, gridStatus, puzzle, solution } = this.state;
+		const { selected, gridStatus, puzzle, solution, disabled } = this.state;
 		if (selected != null && gridStatus[selected] != 'provided') {
 			let newPuzzle = puzzle.slice();
 			newPuzzle[selected] = solution[selected];
 			let newStatus = gridStatus.slice();
 			newStatus[selected] = 'revealed';
+			let newDisabled = disabled.slice();
+			if (countInstances(newPuzzle,newPuzzle[selected]) >= 9) {
+				newDisabled[newPuzzle[selected]-1] = true;
+			}
 			this.setState({
 				puzzle: newPuzzle,
 				gridStatus: newStatus,
+				disabled: newDisabled,
 			});
 		}
 	}
@@ -285,6 +312,7 @@ export default class App extends React.Component {
 					revealErrors={state.revealErrors}
 					penMode={state.penMode}
 					numButton={(i) => this.handleNumButton(i)}
+					disabled={state.disabled}
 					newGame={this.newGame}
 					handlePenChange={this.handlePenChange}
 					toggleRevealErrors={this.toggleRevealErrors}
@@ -297,7 +325,15 @@ export default class App extends React.Component {
 	}
 }
 
-//Returns the number of instances of val in array, 
+//Returns the number of instances of val in array
+//val must be primitive (found via indexOf/includes)
 function countInstances(array,val) {
-	return
+	let count = 0, last = 0;
+	let arr = array.slice();
+	while (arr.includes(val)) {
+		count++;
+		last = arr.indexOf(val);
+		arr = arr.slice(last + 1);
+	}
+	return count;
 }

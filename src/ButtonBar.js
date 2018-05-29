@@ -7,11 +7,21 @@ export default class ButtonBar extends React.Component {
 		const errors = props.revealErrors ? 'Hide Errors' : 'Show Errors';
 		const penMode = props.penMode;
 		const numButtons = [1,2,3,4,5,6,7,8,9].map((val,index) => {
-			return (
-				<button key={index+1} className="numButton" onClick={() => props.numButton(index+1)}>
-					{index + 1}
-				</button>
-			);
+			if (props.disabled[index]) {
+				return (
+					<button key={val} className="numButton" 
+						onClick={() => props.numButton(val)} disabled>
+						{val}
+					</button>
+				);
+			}
+			else {
+				return (
+					<button key={val} className="numButton" onClick={() => props.numButton(val)}>
+						{val}
+					</button>
+				);
+			}
 		})
 		return (
 			<div className="buttons">
