@@ -17,6 +17,7 @@ export default class App extends React.Component {
 			revealErrors: false,
 			optionsMode: false,
 			cheater: false,
+			console: "",
 		};
 	}
 
@@ -92,6 +93,7 @@ export default class App extends React.Component {
 					this.setState({
 						puzzle,
 						gridStatus,
+						console: e.key,
 					});
 				}
 				//Enter notes (OptionSquare)
@@ -122,6 +124,7 @@ export default class App extends React.Component {
 					options[square] = selectedOptions;
 					this.setState({
 						options,
+						console: e.key,
 					});
 				}
 			}
@@ -271,6 +274,7 @@ export default class App extends React.Component {
 		return (
 			<div>
 				<div className="title">Play Sudoku!</div>
+				<div id="console">{this.state.console}</div>
 				<Grid puzzle={state.puzzle} 
 					solution={state.solution}
 					gameOver={gameOver} 
@@ -295,4 +299,9 @@ export default class App extends React.Component {
 			</div>
 		);
 	}
+}
+
+//Returns the number of instances of val in array, 
+function countInstances(array,val) {
+	return
 }
