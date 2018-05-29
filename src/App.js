@@ -160,15 +160,13 @@ export default class App extends React.Component {
 		let puzzle = this.state.puzzle.slice();
 		let gridStatus = this.state.gridStatus.slice();
 		let numComplete = this.state.numComplete.slice();
+		const prev = puzzle[i];
 		puzzle[i] = num;
 		gridStatus[i] = puzzle[i] == this.state.solution[i] ? 
 			'correct' : 'wrong';
-		const count = countInstances(puzzle,num);
-		if (count == 9) {
-			numComplete[num-1] = 'complete';
-		}
-		else if (count > 9) {
-			numComplete[num-1] = 'too-many';
+		numComplete[num-1] = this.checkNumComplete(num,puzzle);
+		if (prev) {
+			numComplete[prev-1] = this.checkNumComplete(prev,puzzle);
 		}
 		this.setState({
 			puzzle,
@@ -212,13 +210,7 @@ export default class App extends React.Component {
 			puzzle[i] = null;
 			gridStatus[i] = null;
 			let numComplete = this.state.numComplete.slice();
-			const count = countInstances(puzzle,num);
-			if (count < 9) {
-				numComplete[num-1] = null;
-			}
-			else if (count == 9) {
-				numComplete[num-1] = 'complete';
-			}
+			numComplete[num-1] = this.checkNumComplete(num);
 			this.setState({
 				puzzle,
 				gridStatus,
@@ -232,6 +224,20 @@ export default class App extends React.Component {
 			this.setState({
 				options,
 			});
+		}
+	}
+
+	//Returns null, 'complete' or 'too-many' based on instances of num in puzzle
+	checkNumComplete = (num,puzzle) => {
+		const count = countInstances(puzzle,num);
+		if (count < 9) {
+			return null;
+		}
+		else if (count == 9) {
+			return 'complete';
+		}
+		else { // (count > 9) 
+			return 'too-many';
 		}
 	}
 
