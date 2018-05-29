@@ -17,7 +17,6 @@ export default class App extends React.Component {
 			revealErrors: false,
 			optionsMode: false,
 			cheater: false,
-			console: "",
 		};
 	}
 
@@ -59,17 +58,17 @@ export default class App extends React.Component {
 		let square = this.state.selected;
 		const penMode = this.state.penMode;
 		if (square != null) {
-			if (e.key.startsWith('Arrow')) {
-				if (e.key == 'ArrowRight' && square % 9 != 8) {
+			if (e.key.includes('Arrow')) {
+				if ((e.key == 'ArrowRight' || e.key == 'UIKeyInputRightArrow') && square % 9 != 8) {
 					square++;
 				}
-				else if (e.key == 'ArrowLeft' && square % 9 != 0) {
+				else if ((e.key == 'ArrowLeft' || e.key == 'UIKeyInputLeftArrow') && square % 9 != 0) {
 					square--;
 				}
-				else if (e.key == 'ArrowUp' && square > 8) {
+				else if ((e.key == 'ArrowUp' || e.key == 'UIKeyInputUpArrow') && square > 8) {
 					square -= 9;
 				}
-				else if (e.key == 'ArrowDown' && square < 72) {
+				else if ((e.key == 'ArrowDown' || e.key == 'UIKeyInputDownArrow') && square < 72) {
 					square += 9;
 				}
 				this.setState({
@@ -93,7 +92,6 @@ export default class App extends React.Component {
 					this.setState({
 						puzzle,
 						gridStatus,
-						console: e.key,
 					});
 				}
 				//Enter notes (OptionSquare)
@@ -124,7 +122,6 @@ export default class App extends React.Component {
 					options[square] = selectedOptions;
 					this.setState({
 						options,
-						console: e.key,
 					});
 				}
 			}
@@ -274,7 +271,6 @@ export default class App extends React.Component {
 		return (
 			<div>
 				<div className="title">Play Sudoku!</div>
-				<div id="console">{this.state.console}</div>
 				<Grid puzzle={state.puzzle} 
 					solution={state.solution}
 					gameOver={gameOver} 
