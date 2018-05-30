@@ -13,9 +13,8 @@ export default class App extends React.Component {
 			gridStatus: Array(81).fill(null),
 			options: Array(81).fill(null),
 			selected: null,
-			penMode: 'pen',
+			penMode: 'pen', //pen, notes, eraser
 			revealErrors: false,
-			optionsMode: false,
 			cheater: false,
 			numComplete: Array(9).fill(null),
 		};
@@ -41,14 +40,14 @@ export default class App extends React.Component {
 			gridStatus,
 			options: Array(81).fill(null),
 			selected: null,
-			penMode: 'pen', //pen vs notes
-			optionsMode: false,
+			penMode: 'pen', //pen, notes, eraser
 			cheater: false,
 			numComplete: Array(9).fill(null),
 		});
 
 	}
 
+	//penMode == 'eraser': erase(i), else: changeSelection(i)
 	handleClick(i) {
 		console.log("Clicked " + i);
 		const selected = this.state.gridStatus[i] == 'provided' ? null : i;
@@ -63,6 +62,9 @@ export default class App extends React.Component {
 
 	}
 
+	//Arrow keys will dispatch changeSelection
+	//Backspace will dispatch erase
+	//Numbers will dispatch penEntry or noteEntry
 	handleKeyPress(e) {
 		let square = this.state.selected;
 		const penMode = this.state.penMode;
@@ -102,6 +104,7 @@ export default class App extends React.Component {
 		console.log(e.key);
 	}
 
+	//Dispatch penEntry or noteEntry accordingly
 	handleNumButton(num) {
 		const square = this.state.selected;
 		const penMode = this.state.penMode;
@@ -134,9 +137,9 @@ export default class App extends React.Component {
 		puzzle[i] = num;
 		gridStatus[i] = puzzle[i] == this.state.solution[i] ? 
 			'correct' : 'wrong';
-		numComplete[num-1] = this.checkNumComplete(num,puzzle);
+		numComplete[num-1] = checkNumComplete(num,puzzle);
 		if (prev) {
-			numComplete[prev-1] = this.checkNumComplete(prev,puzzle);
+			numComplete[prev-1] = checkNumComplete(prev,puzzle);
 		}
 		this.setState({
 			puzzle,
@@ -180,7 +183,7 @@ export default class App extends React.Component {
 			puzzle[i] = null;
 			gridStatus[i] = null;
 			let numComplete = this.state.numComplete.slice();
-			numComplete[num-1] = this.checkNumComplete(num,puzzle);
+			numComplete[num-1] = checkNumComplete(num,puzzle);
 			this.setState({
 				puzzle,
 				gridStatus,
@@ -194,20 +197,6 @@ export default class App extends React.Component {
 			this.setState({
 				options,
 			});
-		}
-	}
-
-	//Returns null, 'complete' or 'too-many' based on instances of num in puzzle
-	checkNumComplete = (num,puzzle) => {
-		const count = countInstances(num,puzzle);
-		if (count < 9) {
-			return null;
-		}
-		else if (count == 9) {
-			return 'complete';
-		}
-		else { // (count > 9) 
-			return 'too-many';
 		}
 	}
 
@@ -231,13 +220,8 @@ export default class App extends React.Component {
 			let numComplete = this.state.numComplete.slice();
 			puzzle[selected] = solution[selected];
 			gridStatus[selected] = 'revealed';
-			const count = countInstances(puzzle[selected],puzzle);
-			if (count == 9) {
-				numComplete[puzzle[selected]-1] = 'complete';
-			}
-			else if (count > 9) {
-				numComplete[puzzle[selected]-1] = 'too-many';
-			}
+			numComplete[puzzle[selected]-1] = checkNumComplete(puzzle[selected],puzzle);
+
 			this.setState({
 				puzzle,
 				gridStatus,
@@ -318,4 +302,18 @@ function countInstances(val,array) {
 		arr = arr.slice(last + 1);
 	}
 	return count;
+}
+
+//Returns null, 'complete' or 'too-many' based on instances of num in puzzle
+function checkNumComplete(num,puzzle) {
+	const count = countInstances(num,puzzle);
+	if (count < 9) {
+		return null;
+	}
+	else if (count == 9) {
+		return 'complete';
+	}
+	else { // (count > 9) 
+		return 'too-many';
+	}
 }
