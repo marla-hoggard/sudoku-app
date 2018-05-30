@@ -1,5 +1,5 @@
 import React from 'react';
-import './index.css';
+import '../index.css';
 
 const ButtonBar = (props) => {
 	const errors = props.revealErrors ? 'Hide Errors' : 'Show Errors';

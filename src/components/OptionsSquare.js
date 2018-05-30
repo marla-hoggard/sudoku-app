@@ -1,5 +1,5 @@
 import React from 'react';
-import './index.css';
+import '../index.css';
 
 const OptionsSquare = ({options, classes, onClick}) => {
 	let optionMap = Array(9).fill(false);

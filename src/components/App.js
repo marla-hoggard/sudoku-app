@@ -2,7 +2,7 @@ import React from 'react';
 import Sudoku from 'sudoku';
 import Grid from './Grid';
 import ButtonBar from './ButtonBar';
-import './index.css';
+import '../index.css';
 
 export default class App extends React.Component {
 	constructor(props) {

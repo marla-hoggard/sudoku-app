@@ -1,8 +1,9 @@
 import React from 'react';
 import Square from './Square';
 import OptionsSquare from './OptionsSquare';
-import './index.css'
-import {EVEN_GRIDS} from './constants'
+import {EVEN_GRIDS} from '../constants';
+import '../index.css';
+
 
 export default class Grid extends React.Component {
 	renderSquare(i) {
