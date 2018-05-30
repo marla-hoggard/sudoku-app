@@ -55,41 +55,11 @@ export default class App extends React.Component {
 
 		//If in erase mode, erase visible info from cell
 		if (this.state.penMode == 'eraser' && selected != null) {
-			if (this.state.puzzle[selected]) {
-				const num = this.state.puzzle[selected];
-				let puzzle = this.state.puzzle.slice();
-				let gridStatus = this.state.gridStatus.slice();
-				let numComplete = this.state.numComplete.slice();
-				puzzle[selected] = null;
-				gridStatus[selected] = null;
-				const count = countInstances(puzzle,num);
-				if (count < 9) {
-					numComplete[num-1] = null;
-				}
-				else if (count == 9) {
-					numComplete[num-1] = 'complete';
-				}
-				this.setState({
-					selected,
-					puzzle,
-					gridStatus,
-					numComplete,
-				});
-			}
-			else if (this.state.options[selected]) {
-				let options = this.state.options.slice();
-				options[selected] = null;
-				this.setState({
-					selected,
-					options,
-				});
-			}
+			this.erase(selected);
 		}
-		else {
-			this.setState({
-				selected,
-			});
-		}
+		this.setState({
+			selected,
+		});
 
 	}
 
@@ -210,7 +180,7 @@ export default class App extends React.Component {
 			puzzle[i] = null;
 			gridStatus[i] = null;
 			let numComplete = this.state.numComplete.slice();
-			numComplete[num-1] = this.checkNumComplete(num);
+			numComplete[num-1] = this.checkNumComplete(num,puzzle);
 			this.setState({
 				puzzle,
 				gridStatus,
@@ -229,7 +199,7 @@ export default class App extends React.Component {
 
 	//Returns null, 'complete' or 'too-many' based on instances of num in puzzle
 	checkNumComplete = (num,puzzle) => {
-		const count = countInstances(puzzle,num);
+		const count = countInstances(num,puzzle);
 		if (count < 9) {
 			return null;
 		}
@@ -261,7 +231,7 @@ export default class App extends React.Component {
 			let numComplete = this.state.numComplete.slice();
 			puzzle[selected] = solution[selected];
 			gridStatus[selected] = 'revealed';
-			const count = countInstances(puzzle,puzzle[selected]);
+			const count = countInstances(puzzle[selected],puzzle);
 			if (count == 9) {
 				numComplete[puzzle[selected]-1] = 'complete';
 			}
@@ -339,7 +309,7 @@ export default class App extends React.Component {
 
 //Returns the number of instances of val in array
 //val must be primitive (found via indexOf/includes)
-function countInstances(array,val) {
+function countInstances(val,array) {
 	let count = 0, last = 0;
 	let arr = array.slice();
 	while (arr.includes(val)) {
