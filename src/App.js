@@ -99,6 +99,15 @@ export default class App extends React.Component {
 				}
 			}
 		}
+		if ('penPEN'.includes(e.key)) {
+			const choice = e.key.toLowerCase();
+			console.log('Choice: ', choice);
+			const penMode = choice == 'p' ? 'pen' :
+				choice == 'n' ? 'notes' : 'eraser'
+			this.setState({
+				penMode,
+			});
+		}
 		console.log(e.key);
 	}
 
