@@ -58,6 +58,15 @@ export default class App extends React.Component {
 				}
 			}
 		}
+		if (e.key.toLowerCase() == 'p') {
+			this.props.changePen(PenMode.PEN)
+		}
+		else if (e.key.toLowerCase() == 'n') {
+			this.props.changePen(PenMode.NOTES)
+		}
+		else if (e.key.toLowerCase() == 'e') {
+			this.props.changePen(PenMode.ERASER)
+		}
 		console.log(e.key);
 	}
 
