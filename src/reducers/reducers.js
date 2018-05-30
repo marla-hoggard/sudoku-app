@@ -1,17 +1,5 @@
-import { NEW_GAME,
-		CHANGE_PEN,
-		PEN_ENTRY,
-		NOTE_ENTRY,
-		ERASE,
-		TOGGLE_REVEAL_ERRORS,
-		REMOVE_ERRORS,
-		SHOW_SQUARE,
-		SHOW_SOLUTION,
-		CHANGE_SELECTION,
-
-		PenMode, 
-		GridStatusOptions,
-	} from './actions';
+import * as actionTypes from '../actions/actionTypes';
+const { PenMode, GridStatusOptions } = actionTypes;
 
 const initialState = {
 	puzzle: Array(81).fill(null),
@@ -27,7 +15,7 @@ const initialState = {
 
 function rootReducer(state = initialState, action) {
 	switch(action.type) {
-		case NEW_GAME:
+		case actionTypes.NEW_GAME:
 			//const { puzzle, solution } = action;
 			const gridStatus = action.puzzle.map(value => { 
 				return value != null ? GridStatusOptions.PROVIDED : null
@@ -39,32 +27,33 @@ function rootReducer(state = initialState, action) {
 				gridStatus,
 				revealErrors: state.revealErrors
 			}
-		case CHANGE_PEN:
+		case actionTypes.CHANGE_PEN:
+			console.log(action.penType);
 			return { ...state, penMode: action.penType}
-		case PEN_ENTRY:
+		case actionTypes.PEN_ENTRY:
 			return penEntryReducer(state,action);
-		case NOTE_ENTRY:
+		case actionTypes.NOTE_ENTRY:
 			return {
 				...state,
 				notes: noteEntryReducer(state.notes, action)
 			}
-		case ERASE:
+		case actionTypes.ERASE:
 			return eraseReducer(state,action);
-		case TOGGLE_REVEAL_ERRORS:
+		case actionTypes.TOGGLE_REVEAL_ERRORS:
 			return { ...state, revealErrors: !state.revealErrors }
-		case REMOVE_ERRORS:
+		case actionTypes.REMOVE_ERRORS:
 			const noErrors = state.puzzle.map((value,index) => {
-				return value == this.state.solution[index] ? value : null;
+				return value == state.solution[index] ? value : null;
 			});
 			return { 
 				...state, 
 				puzzle: noErrors,
 			}
-		case SHOW_SQUARE:
+		case actionTypes.SHOW_SQUARE:
 			return showSquareReducer(state,action);
-		case SHOW_SOLUTION:
+		case actionTypes.SHOW_SOLUTION:
 			return showSolutionReducer(state,action);
-		case CHANGE_SELECTION:
+		case actionTypes.CHANGE_SELECTION:
 			return {
 				...state,
 				selected: action.square,
@@ -77,7 +66,7 @@ function rootReducer(state = initialState, action) {
 //===== SUB-REDUCERS
 
 function penEntryReducer(state,action) {
-	if (action.type !== 'PEN_ENTRY') {
+	if (action.type !== actionTypes.PEN_ENTRY) {
 		return state;
 	}
 	const { num, square } = action;
@@ -86,7 +75,7 @@ function penEntryReducer(state,action) {
 	let numComplete = state.numComplete.slice();
 	const prev = puzzle[square];
 	puzzle[square] = num;
-	gridStatus[square] = puzzle[square] == this.state.solution[square] ? 
+	gridStatus[square] = puzzle[square] == state.solution[square] ? 
 		'correct' : 'wrong';
 	numComplete[num-1] = checkNumComplete(num,puzzle);
 	if (prev) {
@@ -102,7 +91,7 @@ function penEntryReducer(state,action) {
 
 //Only needs notes
 function noteEntryReducer(notesFromState,action) {
-	if (action.type !== 'NOTE_ENTRY') {
+	if (action.type !== actionTypes.NOTE_ENTRY) {
 		return notesFromState;
 	}
 	const { num, square } = action;
@@ -129,7 +118,7 @@ function noteEntryReducer(notesFromState,action) {
 }
 
 function eraseReducer(state,action) {
-	if (action.type !== 'ERASE') {
+	if (action.type !== actionTypes.ERASE) {
 		return state;
 	}
 	const num = state.puzzle[action.square];
@@ -148,7 +137,7 @@ function eraseReducer(state,action) {
 }
 
 function erasePenReducer(state,action) {
-	if (action.type !== 'ERASE') {
+	if (action.type !== actionTypes.ERASE) {
 		return state;
 	}
 	const { square } = action;
@@ -178,7 +167,7 @@ function erasePenReducer(state,action) {
 }
 
 function eraseNotesReducer(notesFromState,action) {
-	if (action.type !== 'ERASE') {
+	if (action.type !== actionTypes.ERASE) {
 		return notesFromState;
 	}
 	let notes = notesFromState.slice();
@@ -187,6 +176,9 @@ function eraseNotesReducer(notesFromState,action) {
 }
 
 function showSquareReducer(state,action) {
+	if (action.type !== actionTypes.SHOW_SQUARE) {
+		return state;
+	}
 	const { selected, solution } = state;
 	if (selected != null && state.gridStatus[selected] != GridStatusOptions.PROVIDED) {
 		let puzzle = state.puzzle.slice();
@@ -205,6 +197,9 @@ function showSquareReducer(state,action) {
 }
 
 function showSolutionReducer(state,action) {
+	if (action.type !== actionTypes.SHOW_SOLUTION) {
+		return state;
+	}
 	const gridStatus = state.puzzle.map((value,index) => {
 		return value == null ? GridStatusOptions.REVEALED : state.gridStatus[index];
 	});

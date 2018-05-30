@@ -75,14 +75,14 @@
   background-color: #91a6c9;
 }
 
-/* Notes (OptionsSquare) component */
-.options {
+/* Notes (NotesSquare) component */
+.notes {
   display: grid;
   grid-template-columns: repeat(3, auto);
   justify-content: space-between;
 }
 
-.option {
+.note {
   font-size: 10px;
   height: 10px;
   line-height: 10px;
