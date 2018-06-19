@@ -43,7 +43,7 @@ function rootReducer(state = initialState, action) {
 			return { ...state, revealErrors: !state.revealErrors }
 		case actionTypes.REMOVE_ERRORS:
 			const noErrors = state.puzzle.map((value,index) => {
-				return value == state.solution[index] ? value : null;
+				return value === state.solution[index] ? value : null;
 			});
 			return { 
 				...state, 
@@ -75,7 +75,7 @@ function penEntryReducer(state,action) {
 	let numComplete = state.numComplete.slice();
 	const prev = puzzle[square];
 	puzzle[square] = num;
-	gridStatus[square] = puzzle[square] == state.solution[square] ? 
+	gridStatus[square] = puzzle[square] === state.solution[square] ? 
 		'correct' : 'wrong';
 	numComplete[num-1] = checkNumComplete(num,puzzle);
 	if (prev) {
@@ -180,7 +180,7 @@ function showSquareReducer(state,action) {
 		return state;
 	}
 	const { selected, solution } = state;
-	if (selected != null && state.gridStatus[selected] != GridStatusOptions.PROVIDED) {
+	if (selected != null && state.gridStatus[selected] !== GridStatusOptions.PROVIDED) {
 		let puzzle = state.puzzle.slice();
 		let gridStatus = state.gridStatus.slice();
 		let numComplete = state.numComplete.slice();
@@ -234,7 +234,7 @@ function checkNumComplete(num,puzzle) {
 	if (count < 9) {
 		return null;
 	}
-	else if (count == 9) {
+	else if (count === 9) {
 		return 'complete';
 	}
 	else { // (count > 9) 

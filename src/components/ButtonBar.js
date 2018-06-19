@@ -20,11 +20,11 @@ const ButtonBar = (props) => {
 			<div className="button-row radio-row">
 				<div><button onClick={props.newGame}>New Game</button></div>
 				<div className="radio-group">
-					<input type="radio" id="radio-pen" name="selector-pen" checked={penMode == PenMode.PEN} onChange={props.handlePenChange} />
+					<input type="radio" id="radio-pen" name="selector-pen" checked={penMode === PenMode.PEN} onChange={props.handlePenChange} />
 						<label htmlFor="radio-pen">Pen</label>
-					<input type="radio" id="radio-notes" name="selector-pen" checked={penMode == PenMode.NOTES} onChange={props.handlePenChange} />
+					<input type="radio" id="radio-notes" name="selector-pen" checked={penMode === PenMode.NOTES} onChange={props.handlePenChange} />
 						<label htmlFor="radio-notes">Notes</label>
-					<input type="radio" id="radio-eraser" name="selector-pen" checked={penMode == PenMode.ERASER} onChange={props.handlePenChange} />
+					<input type="radio" id="radio-eraser" name="selector-pen" checked={penMode === PenMode.ERASER} onChange={props.handlePenChange} />
 						<label htmlFor="radio-eraser">Eraser</label>
 				</div>
 			</div>

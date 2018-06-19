@@ -1,10 +1,10 @@
-import {connect} from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as actions from '../actions/actionCreators';
+//import {connect} from 'react-redux';
+//import { bindActionCreators } from 'redux';
+//import * as actions from '../actions/actionCreators';
 import { PenMode, GridStatusOptions } from '../actions/actionTypes';
 import React from 'react';
 
-import Sudoku from 'sudoku';
+//import Sudoku from 'sudoku';
 import Grid from './Grid';
 import ButtonBar from './ButtonBar';
 import '../index.css';
@@ -13,10 +13,10 @@ export default class App extends React.Component {
 	//penMode == 'eraser': erase(i), else: changeSelection(i)
 	handleClick(i) {
 		console.log("Clicked " + i);
-		const selected = this.props.gridStatus[i] == GridStatusOptions.PROVIDED ? null : i;
+		const selected = this.props.gridStatus[i] === GridStatusOptions.PROVIDED ? null : i;
 
 		//If in erase mode, erase visible info from cell
-		if (this.props.penMode == PenMode.ERASER && selected != null) {
+		if (this.props.penMode === PenMode.ERASER && selected != null) {
 			this.props.erase(selected);
 		}
 		this.props.changeSelection(selected);
@@ -31,10 +31,10 @@ export default class App extends React.Component {
 		const penMode = this.props.penMode;
 		if (square != null) {
 			if (e.key.includes('Arrow')) {
-				if (e.key.includes('Right') && square % 9 != 8) {
+				if (e.key.includes('Right') && square % 9 !== 8) {
 					this.props.changeSelection(square + 1);
 				}
-				else if (e.key.includes('Left') && square % 9 != 0) {
+				else if (e.key.includes('Left') && square % 9 !== 0) {
 					this.props.changeSelection(square - 1);
 				}
 				else if (e.key.includes('Up') && square > 8) {
@@ -44,27 +44,27 @@ export default class App extends React.Component {
 					this.props.changeSelection(square + 9);
 				}
 			}
-			if (this.props.gridStatus[square] != GridStatusOptions.PROVIDED) {
-				if (e.key == 'Backspace') {
+			if (this.props.gridStatus[square] !== GridStatusOptions.PROVIDED) {
+				if (e.key === 'Backspace') {
 					this.props.erase(square);
 				}
 				else if (e.key > 0 && e.key < 10) {
-					if (penMode == PenMode.PEN) {
+					if (penMode === PenMode.PEN) {
 						this.props.penEntry(+e.key,square);
 					}
-					else if (penMode == PenMode.NOTES) {
+					else if (penMode === PenMode.NOTES) {
 						this.props.noteEntry(+e.key,square);
 					}
 				}
 			}
 		}
-		if (e.key.toLowerCase() == 'p') {
+		if (e.key.toLowerCase() === 'p') {
 			this.props.changePen(PenMode.PEN)
 		}
-		else if (e.key.toLowerCase() == 'n') {
+		else if (e.key.toLowerCase() === 'n') {
 			this.props.changePen(PenMode.NOTES)
 		}
-		else if (e.key.toLowerCase() == 'e') {
+		else if (e.key.toLowerCase() === 'e') {
 			this.props.changePen(PenMode.ERASER)
 		}
 		console.log(e.key);
@@ -75,11 +75,11 @@ export default class App extends React.Component {
 		const square = this.props.selected;
 		const penMode = this.props.penMode;
 		if (square != null) {
-			if (this.props.gridStatus[square] != GridStatusOptions.PROVIDED) {
-				if (penMode == PenMode.PEN) {
+			if (this.props.gridStatus[square] !== GridStatusOptions.PROVIDED) {
+				if (penMode === PenMode.PEN) {
 					this.props.penEntry(num,square);
 				}
-				else if (penMode == PenMode.NOTES) {
+				else if (penMode === PenMode.NOTES) {
 					this.props.noteEntry(num,square);
 				}
 			}
