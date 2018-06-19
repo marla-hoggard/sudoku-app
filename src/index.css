@@ -64,6 +64,10 @@
   color: green;
 }
 
+.guess {
+  color: #9ba334;
+}
+
 .selected {
   border: 3px solid green;
   line-height: 36px;
@@ -141,6 +145,7 @@ button:disabled {
   display: flex;
   justify-content: center;
 }
+
 input[type=radio] {
   position: absolute;
   visibility: hidden;

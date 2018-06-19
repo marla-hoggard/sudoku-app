@@ -13,13 +13,15 @@ export const CHANGE_SELECTION = 'CHANGE_SELECTION';
 /* state constants */
 export const PenMode = {
 	PEN: 'pen',
+	GUESS: 'guess',
 	NOTES: 'notes',
-	ERASER: 'eraser'
+	ERASER: 'eraser',
 }
 
 export const GridStatusOptions = {
 	PROVIDED: 'provided',
 	REVEALED: 'revealed',
 	CORRECT: 'correct',
-	WRONG: 'wrong'
+	WRONG: 'wrong',
+	GUESS: 'guess',
 }

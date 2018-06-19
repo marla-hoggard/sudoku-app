@@ -16,7 +16,6 @@ const initialState = {
 function rootReducer(state = initialState, action) {
 	switch(action.type) {
 		case actionTypes.NEW_GAME:
-			//const { puzzle, solution } = action;
 			const gridStatus = action.puzzle.map(value => { 
 				return value != null ? GridStatusOptions.PROVIDED : null
 			});
@@ -27,20 +26,26 @@ function rootReducer(state = initialState, action) {
 				gridStatus,
 				revealErrors: state.revealErrors
 			}
+
 		case actionTypes.CHANGE_PEN:
 			console.log(action.penType);
 			return { ...state, penMode: action.penType}
+
 		case actionTypes.PEN_ENTRY:
 			return penEntryReducer(state,action);
+
 		case actionTypes.NOTE_ENTRY:
 			return {
 				...state,
 				notes: noteEntryReducer(state.notes, action)
 			}
+
 		case actionTypes.ERASE:
 			return eraseReducer(state,action);
+
 		case actionTypes.TOGGLE_REVEAL_ERRORS:
 			return { ...state, revealErrors: !state.revealErrors }
+
 		case actionTypes.REMOVE_ERRORS:
 			const noErrors = state.puzzle.map((value,index) => {
 				return value === state.solution[index] ? value : null;
@@ -49,22 +54,27 @@ function rootReducer(state = initialState, action) {
 				...state, 
 				puzzle: noErrors,
 			}
+
 		case actionTypes.SHOW_SQUARE:
 			return showSquareReducer(state,action);
+
 		case actionTypes.SHOW_SOLUTION:
 			return showSolutionReducer(state,action);
+
 		case actionTypes.CHANGE_SELECTION:
 			return {
 				...state,
 				selected: action.square,
 			}
+
 		default:
 			return state;
 	}
 }
 
-//===== SUB-REDUCERS
+//===== SUB-REDUCERS ======
 
+//Enters a number in Pen or Guess mode
 function penEntryReducer(state,action) {
 	if (action.type !== actionTypes.PEN_ENTRY) {
 		return state;
@@ -75,8 +85,8 @@ function penEntryReducer(state,action) {
 	let numComplete = state.numComplete.slice();
 	const prev = puzzle[square];
 	puzzle[square] = num;
-	gridStatus[square] = puzzle[square] === state.solution[square] ? 
-		'correct' : 'wrong';
+	gridStatus[square] = state.penMode === PenMode.GUESS ? 'guess' : 
+		puzzle[square] === state.solution[square] ? 'correct' : 'wrong';
 	numComplete[num-1] = checkNumComplete(num,puzzle);
 	if (prev) {
 		numComplete[prev-1] = checkNumComplete(prev,puzzle);
@@ -89,7 +99,8 @@ function penEntryReducer(state,action) {
 	}
 }
 
-//Only needs notes
+//Enters a note in Notes mode
+//Only needs to be passed notes
 function noteEntryReducer(notesFromState,action) {
 	if (action.type !== actionTypes.NOTE_ENTRY) {
 		return notesFromState;
@@ -97,6 +108,7 @@ function noteEntryReducer(notesFromState,action) {
 	const { num, square } = action;
 	let notes = notesFromState.slice();
 	let visibleNotes = notes[square];
+
 	//Already some notes at square
 	if (visibleNotes) {
 		//Remove the number from the notes
@@ -117,6 +129,7 @@ function noteEntryReducer(notesFromState,action) {
 	return notes;
 }
 
+//In erase mode -> kicks to subreducer based on what's in current square
 function eraseReducer(state,action) {
 	if (action.type !== actionTypes.ERASE) {
 		return state;
@@ -136,6 +149,7 @@ function eraseReducer(state,action) {
 	}
 }
 
+//Erases the Pen number in the square
 function erasePenReducer(state,action) {
 	if (action.type !== actionTypes.ERASE) {
 		return state;
@@ -166,6 +180,7 @@ function erasePenReducer(state,action) {
 	}
 }
 
+//Clears all notes in square
 function eraseNotesReducer(notesFromState,action) {
 	if (action.type !== actionTypes.ERASE) {
 		return notesFromState;
@@ -175,6 +190,7 @@ function eraseNotesReducer(notesFromState,action) {
 	return notes;
 }
 
+//Reveals the answer to the selected square
 function showSquareReducer(state,action) {
 	if (action.type !== actionTypes.SHOW_SQUARE) {
 		return state;
@@ -196,6 +212,7 @@ function showSquareReducer(state,action) {
 	}
 }
 
+//Reveals entire solution
 function showSolutionReducer(state,action) {
 	if (action.type !== actionTypes.SHOW_SOLUTION) {
 		return state;

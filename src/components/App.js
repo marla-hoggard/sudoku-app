@@ -49,7 +49,7 @@ export default class App extends React.Component {
 					this.props.erase(square);
 				}
 				else if (e.key > 0 && e.key < 10) {
-					if (penMode === PenMode.PEN) {
+					if (penMode === PenMode.PEN || penMode === PenMode.GUESS) {
 						this.props.penEntry(+e.key,square);
 					}
 					else if (penMode === PenMode.NOTES) {
@@ -60,6 +60,9 @@ export default class App extends React.Component {
 		}
 		if (e.key.toLowerCase() === 'p') {
 			this.props.changePen(PenMode.PEN)
+		}
+		else if (e.key.toLowerCase() === 'g') {
+			this.props.changePen(PenMode.GUESS)
 		}
 		else if (e.key.toLowerCase() === 'n') {
 			this.props.changePen(PenMode.NOTES)
@@ -76,7 +79,7 @@ export default class App extends React.Component {
 		const penMode = this.props.penMode;
 		if (square != null) {
 			if (this.props.gridStatus[square] !== GridStatusOptions.PROVIDED) {
-				if (penMode === PenMode.PEN) {
+				if (penMode === PenMode.PEN || penMode === PenMode.GUESS) {
 					this.props.penEntry(num,square);
 				}
 				else if (penMode === PenMode.NOTES) {

@@ -1,5 +1,6 @@
 import Sudoku from 'sudoku';
 import * as types from './actionTypes'
+
 /* action creators */
 export function newGame() {
 	let puzzle = Sudoku.makepuzzle();
