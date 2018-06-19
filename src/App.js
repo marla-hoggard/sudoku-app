@@ -51,10 +51,10 @@ export default class App extends React.Component {
 
 	handleClick(i) {
 		console.log("Clicked " + i);
-		const selected = this.state.gridStatus[i] == 'provided' ? null : i;
+		const selected = this.state.gridStatus[i] === 'provided' ? null : i;
 
 		//If in erase mode, erase visible info from cell
-		if (this.state.penMode == 'eraser' && selected != null) {
+		if (this.state.penMode === 'eraser' && selected != null) {
 			this.erase(selected);
 		}
 		this.setState({
@@ -68,10 +68,10 @@ export default class App extends React.Component {
 		const penMode = this.state.penMode;
 		if (square != null) {
 			if (e.key.includes('Arrow')) {
-				if (e.key.includes('Right') && square % 9 != 8) {
+				if (e.key.includes('Right') && square % 9 !== 8) {
 					square++;
 				}
-				else if (e.key.includes('Left') && square % 9 != 0) {
+				else if (e.key.includes('Left') && square % 9 !== 0) {
 					square--;
 				}
 				else if (e.key.includes('Up') && square > 8) {
@@ -84,16 +84,16 @@ export default class App extends React.Component {
 					selected: square,
 				});
 			}
-			if (this.state.gridStatus[square] != 'provided') {
+			if (this.state.gridStatus[square] !== 'provided') {
 				//Enter big numbers (Square)
-				if (e.key == 'Backspace') {
+				if (e.key === 'Backspace') {
 					this.erase(square);
 				}
 				else if (e.key > 0 && e.key < 10) {
-					if (penMode == 'pen') {
+					if (penMode === 'pen') {
 						this.penEntry(+e.key,square);
 					}
-					else if (penMode == 'notes') {
+					else if (penMode === 'notes') {
 						this.noteEntry(+e.key,square);
 					}
 				}
@@ -102,8 +102,8 @@ export default class App extends React.Component {
 		if ('penPEN'.includes(e.key)) {
 			const choice = e.key.toLowerCase();
 			console.log('Choice: ', choice);
-			const penMode = choice == 'p' ? 'pen' :
-				choice == 'n' ? 'notes' : 'eraser'
+			const penMode = choice === 'p' ? 'pen' :
+				choice === 'n' ? 'notes' : 'eraser'
 			this.setState({
 				penMode,
 			});
@@ -115,12 +115,12 @@ export default class App extends React.Component {
 		const square = this.state.selected;
 		const penMode = this.state.penMode;
 		if (square != null) {
-			if (this.state.gridStatus[square] != 'provided') {
-				if (penMode == 'pen') {
+			if (this.state.gridStatus[square] !== 'provided') {
+				if (penMode === 'pen') {
 					this.penEntry(num,square);
 				}
 				//Enter notes (OptionSquare)
-				else if (penMode == 'notes') {
+				else if (penMode === 'notes') {
 					this.noteEntry(num,square);
 				}
 			}
@@ -141,7 +141,7 @@ export default class App extends React.Component {
 		let numComplete = this.state.numComplete.slice();
 		const prev = puzzle[i];
 		puzzle[i] = num;
-		gridStatus[i] = puzzle[i] == this.state.solution[i] ? 
+		gridStatus[i] = puzzle[i] === this.state.solution[i] ? 
 			'correct' : 'wrong';
 		numComplete[num-1] = this.checkNumComplete(num,puzzle);
 		if (prev) {
@@ -212,7 +212,7 @@ export default class App extends React.Component {
 		if (count < 9) {
 			return null;
 		}
-		else if (count == 9) {
+		else if (count === 9) {
 			return 'complete';
 		}
 		else { // (count > 9) 
@@ -227,21 +227,21 @@ export default class App extends React.Component {
 
 	removeErrors = () => {
 		const puzzle = this.state.puzzle.map((value,index) => {
-			return value == this.state.solution[index] ? value : null;
+			return value === this.state.solution[index] ? value : null;
 		});
 		this.setState({ puzzle });
 	}
 
 	showSquare = () => {
 		const { selected, solution } = this.state;
-		if (selected != null && this.state.gridStatus[selected] != 'provided') {
+		if (selected != null && this.state.gridStatus[selected] !== 'provided') {
 			let puzzle = this.state.puzzle.slice();
 			let gridStatus = this.state.gridStatus.slice();
 			let numComplete = this.state.numComplete.slice();
 			puzzle[selected] = solution[selected];
 			gridStatus[selected] = 'revealed';
 			const count = countInstances(puzzle[selected],puzzle);
-			if (count == 9) {
+			if (count === 9) {
 				numComplete[puzzle[selected]-1] = 'complete';
 			}
 			else if (count > 9) {

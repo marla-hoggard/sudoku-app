@@ -8,14 +8,14 @@ export default class Grid extends React.Component {
 	renderSquare(i) {
 		let classes = EVEN_GRIDS.includes(i) ? "" : "odd";
 		const status = this.props.gridStatus[i];
-		if (!this.props.revealErrors && (status == 'correct' || status == 'wrong')) {
+		if (!this.props.revealErrors && (status === 'correct' || status === 'wrong')) {
 			classes += " entered";
 		}
 		else if (status) {
 			classes += ' ' + status;
 		}
 		
-		if (this.props.selected == i) {
+		if (this.props.selected === i) {
 			classes += " selected"
 		}
 
@@ -34,7 +34,7 @@ export default class Grid extends React.Component {
 		if (!EVEN_GRIDS.includes(i)) {
 			classes += " odd";
 		}
-		if (this.props.selected == i) {
+		if (this.props.selected === i) {
 			classes += " selected";
 		}
 		return (
