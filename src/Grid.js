@@ -53,6 +53,11 @@ export default class Grid extends React.Component {
 				<div className="grid game-over">You win!</div>
 			);
 		}
+		else if (this.props.paused) {
+			return (
+				<div className="grid game-over">Paused</div>
+			);
+		}
 		else {
 			let grid = this.props.puzzle.map((value,index) => {
 				if (value || this.props.options[index] == null) {

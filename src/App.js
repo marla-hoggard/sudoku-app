@@ -1,5 +1,6 @@
 import React from 'react';
 import Sudoku from 'sudoku';
+import Timer from './Timer';
 import Grid from './Grid';
 import ButtonBar from './ButtonBar';
 import './index.css';
@@ -18,6 +19,7 @@ export default class App extends React.Component {
 			optionsMode: false,
 			cheater: false,
 			numComplete: Array(9).fill(null),
+			activeGame: false,
 		};
 	}
 
@@ -45,6 +47,7 @@ export default class App extends React.Component {
 			optionsMode: false,
 			cheater: false,
 			numComplete: Array(9).fill(null),
+			activeGame: true,
 		});
 
 	}
@@ -259,9 +262,19 @@ export default class App extends React.Component {
 		});
 	}
 	
+	toggleActiveGame = () => {
+		this.setState(prevState => {
+			return {
+				activeGame: !prevState.activeGame
+			}
+		})
+	}
 	toggleRevealErrors = () => {
-		const revealErrors = !this.state.revealErrors;
-		this.setState({ revealErrors });
+		this.setState(prevState => {
+			return {
+				revealErrors: !prevState.revealErrors
+			}
+		})
 	}
 
 	removeErrors = () => {
@@ -306,6 +319,7 @@ export default class App extends React.Component {
 			gridStatus,
 			revealErrors: true,
 			cheater: true,
+			activeGame: false,
 		})
 	}
 
@@ -328,9 +342,13 @@ export default class App extends React.Component {
 		return (
 			<div>
 				<div className="title">Play Sudoku!</div>
+				<Timer active={state.activeGame && !gameOver}
+					toggleTimer={this.toggleActiveGame}
+					newGame={this.newGame} />
 				<Grid puzzle={state.puzzle} 
 					solution={state.solution}
 					gameOver={gameOver} 
+					paused={!state.activeGame && !state.cheater}
 					gridStatus={state.gridStatus}
 					selected={state.selected}
 					revealErrors={state.revealErrors}
