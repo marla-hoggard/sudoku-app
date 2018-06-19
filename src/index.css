@@ -80,13 +80,13 @@
 }
 
 /* Notes (NotesSquare) component */
-.notes {
+.options {
   display: grid;
   grid-template-columns: repeat(3, auto);
   justify-content: space-between;
 }
 
-.note {
+.option {
   font-size: 10px;
   height: 10px;
   line-height: 10px;
@@ -129,6 +129,13 @@ button:disabled {
   margin-top: 10px;
 }
 
+.button-category {
+	font-family: 'Roboto', 'sans-serif';
+	font-size: 14px;
+	//font-weight: bold;
+	margin-right: 5px;
+}
+
 /* numButtons */
 .complete {
   background-color: green;
@@ -166,6 +173,7 @@ label {
 input[type=radio]:checked + label {
   color: white;
   background: grey;
+  font-weight: bold;
 }
 
 label + input[type=radio] + label {
@@ -195,7 +203,7 @@ label + input[type=radio] + label {
 		height: calc(95vw / 9 - 5px);
 		line-height: calc(95vw / 9 - 5px);
 	}
-	.note {
+	.option {
 		font-size: 40%;
 		height: 50%;
 		line-height: 50%;

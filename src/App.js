@@ -90,7 +90,7 @@ export default class App extends React.Component {
 					this.erase(square);
 				}
 				else if (e.key > 0 && e.key < 10) {
-					if (penMode === 'pen') {
+					if (penMode === 'pen' || penMode === 'guess') {
 						this.penEntry(+e.key,square);
 					}
 					else if (penMode === 'notes') {
@@ -103,6 +103,7 @@ export default class App extends React.Component {
 			const choice = e.key.toLowerCase();
 			console.log('Choice: ', choice);
 			const penMode = choice === 'p' ? 'pen' :
+				choice === 'g' ? 'guess' :
 				choice === 'n' ? 'notes' : 'eraser'
 			this.setState({
 				penMode,
@@ -116,7 +117,7 @@ export default class App extends React.Component {
 		const penMode = this.state.penMode;
 		if (square != null) {
 			if (this.state.gridStatus[square] !== 'provided') {
-				if (penMode === 'pen') {
+				if (penMode === 'pen' || penMode === 'guess') {
 					this.penEntry(num,square);
 				}
 				//Enter notes (OptionSquare)
@@ -135,14 +136,15 @@ export default class App extends React.Component {
 	}
 
 	//num: number to enter, i: grid location
+	//Used for pen and guess mode
 	penEntry = (num,i) => {
 		let puzzle = this.state.puzzle.slice();
 		let gridStatus = this.state.gridStatus.slice();
 		let numComplete = this.state.numComplete.slice();
 		const prev = puzzle[i];
 		puzzle[i] = num;
-		gridStatus[i] = puzzle[i] === this.state.solution[i] ? 
-			'correct' : 'wrong';
+		gridStatus[i] = this.state.penMode === 'guess' ? 'guess' :
+			puzzle[i] === this.state.solution[i] ? 'correct' : 'wrong';
 		numComplete[num-1] = this.checkNumComplete(num,puzzle);
 		if (prev) {
 			numComplete[prev-1] = this.checkNumComplete(prev,puzzle);
@@ -220,6 +222,43 @@ export default class App extends React.Component {
 		}
 	}
 
+	//Sets all guesses as though entered via pen
+	confirmGuesses = () => {
+		console.log("Confirm guesses");
+		const {puzzle,solution} = this.state;
+		let gridStatus = this.state.gridStatus.map((status,i) => {
+			if (status === 'guess') {
+				return puzzle[i] === solution[i] ? 'correct' : 'wrong';
+			}
+			else {
+				return status;
+			}
+		});
+		this.setState({
+			gridStatus,
+		});
+	}
+
+	//Remove all current entries from guess mode	
+	removeGuesses = () => {
+		console.log("Remove guesses");
+		let puzzle = this.state.puzzle.slice();
+		let gridStatus = [];
+		this.state.gridStatus.forEach((status,index) => {
+			if (status === 'guess') {
+				puzzle[index] = null;
+				gridStatus.push(null);
+			}
+			else {
+				gridStatus.push(status);
+			}
+		});
+		this.setState({
+			puzzle,
+			gridStatus,
+		});
+	}
+	
 	toggleRevealErrors = () => {
 		const revealErrors = !this.state.revealErrors;
 		this.setState({ revealErrors });
@@ -306,6 +345,8 @@ export default class App extends React.Component {
 					numComplete={state.numComplete}
 					newGame={this.newGame}
 					handlePenChange={this.handlePenChange}
+					confirmGuesses={this.confirmGuesses}
+					removeGuesses={this.removeGuesses}
 					toggleRevealErrors={this.toggleRevealErrors}
 					removeErrors={this.removeErrors}
 					showSquare={this.showSquare}

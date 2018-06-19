@@ -2,7 +2,7 @@ import React from 'react';
 import './index.css';
 
 const ButtonBar = (props) => {
-	const errors = props.revealErrors ? 'Hide Errors' : 'Show Errors';
+	const errors = props.revealErrors ? 'Error Checking: ON' : 'Error Checking: OFF';
 	const penMode = props.penMode;
 	const numButtons = [1,2,3,4,5,6,7,8,9].map((val,index) => {
 		const classes = props.numComplete[index] ? "numButton " + props.numComplete[index] : "numButton";
@@ -21,6 +21,8 @@ const ButtonBar = (props) => {
 				<div className="radio-group">
 					<input type="radio" id="radio-pen" name="selector-pen" checked={penMode === 'pen'} onChange={props.handlePenChange} />
 						<label htmlFor="radio-pen">Pen</label>
+						<input type="radio" id="radio-guess" name="selector-pen" checked={penMode === 'guess'} onChange={props.handlePenChange} />
+						<label htmlFor="radio-guess">Guess</label>
 					<input type="radio" id="radio-notes" name="selector-pen" checked={penMode === 'notes'} onChange={props.handlePenChange} />
 						<label htmlFor="radio-notes">Notes</label>
 					<input type="radio" id="radio-eraser" name="selector-pen" checked={penMode === 'eraser'} onChange={props.handlePenChange} />
@@ -28,8 +30,13 @@ const ButtonBar = (props) => {
 				</div>
 			</div>
 			<div className="button-row">
+				<span className="button-category">Guesses: </span>
+				<button onClick={props.confirmGuesses}>Make Permanent</button>
+				<button onClick={props.removeGuesses}>Clear All</button>
+			</div>
+			<div className="button-row">
 				<button onClick={props.toggleRevealErrors}>{errors}</button>
-				<button onClick={props.removeErrors}>Remove Errors</button>
+				<button onClick={props.removeErrors}>Clear Errors</button>
 			</div>
 			<div className="button-row">
 				<button onClick={props.showSquare}>Reveal Square</button>
