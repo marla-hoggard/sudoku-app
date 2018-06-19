@@ -246,9 +246,13 @@ export default class App extends React.Component {
 	removeGuesses = () => {
 		console.log("Remove guesses");
 		let puzzle = this.state.puzzle.slice();
-		let gridStatus = [];
+		let numComplete = this.state.numComplete.slice();
+		let gridStatus = [], numToCheck = [];
 		this.state.gridStatus.forEach((status,index) => {
 			if (status === 'guess') {
+				if (!numToCheck.includes(puzzle[index])) {
+					numToCheck.push(puzzle[index]);
+				}
 				puzzle[index] = null;
 				gridStatus.push(null);
 			}
@@ -256,9 +260,13 @@ export default class App extends React.Component {
 				gridStatus.push(status);
 			}
 		});
+		numToCheck.forEach(num => {
+			numComplete[num-1] = this.checkNumComplete(num,puzzle);
+		});
 		this.setState({
 			puzzle,
 			gridStatus,
+			numComplete,
 		});
 	}
 	
