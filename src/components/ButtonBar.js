@@ -3,7 +3,7 @@ import { PenMode } from '../actions/actionTypes';
 import '../index.css';
 
 const ButtonBar = (props) => {
-	const errors = props.revealErrors ? 'Hide Errors' : 'Show Errors';
+	const errors = props.revealErrors ? 'Error Checking: ON' : 'Error Checking: OFF';
 	const penMode = props.penMode;
 	const numButtons = [1,2,3,4,5,6,7,8,9].map((val,index) => {
 		const classes = props.numComplete[index] ? "numButton " + props.numComplete[index] : "numButton";
@@ -31,8 +31,14 @@ const ButtonBar = (props) => {
 				</div>
 			</div>
 			<div className="button-row">
+				<span className="button-category">Guesses: </span>
+				<button onClick={props.confirmGuesses}>Make Permanent</button>
+				<button onClick={props.removeGuesses}>Clear All</button>
+			</div>
+
+			<div className="button-row">
 				<button onClick={props.toggleRevealErrors}>{errors}</button>
-				<button onClick={props.removeErrors}>Remove Errors</button>
+				<button onClick={props.removeErrors}>Clear Errors</button>
 			</div>
 			<div className="button-row">
 				<button onClick={props.showSquare}>Reveal Square</button>

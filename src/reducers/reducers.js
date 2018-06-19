@@ -43,6 +43,12 @@ function rootReducer(state = initialState, action) {
 		case actionTypes.ERASE:
 			return eraseReducer(state,action);
 
+		case actionTypes.CONFIRM_GUESSES:
+			return confirmGuessesReducer(state,action);
+
+		case actionTypes.REMOVE_GUESSES:
+			return removeGuessesReducer(state,action);
+
 		case actionTypes.TOGGLE_REVEAL_ERRORS:
 			return { ...state, revealErrors: !state.revealErrors }
 
@@ -188,6 +194,39 @@ function eraseNotesReducer(notesFromState,action) {
 	let notes = notesFromState.slice();
 	notes[action.square] = null;
 	return notes;
+}
+
+function confirmGuessesReducer(state,action) {
+	const {puzzle,solution} = state;
+	let gridStatus = state.gridStatus.map((status,index) => {
+		if (status === 'guess') {
+			return puzzle[index] === solution[index] ? 'correct' : 'wrong';
+		}
+		else return status;
+	});
+	return {
+		...state,
+		gridStatus,
+	}
+}
+
+function removeGuessesReducer(state,action) {
+	let puzzle = state.puzzle.slice();
+	let gridStatus = [];
+	state.gridStatus.forEach((status,index) => {
+		if (status === 'guess') {
+			puzzle[index] = null;
+			gridStatus.push(null);
+		}
+		else {
+			gridStatus.push(status);
+		}
+	});
+	return {
+		...state,
+		puzzle,
+		gridStatus,
+	}
 }
 
 //Reveals the answer to the selected square

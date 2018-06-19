@@ -129,6 +129,12 @@ button:disabled {
   margin-top: 10px;
 }
 
+.button-category {
+	font-family: 'Roboto', 'sans-serif';
+	font-size: 14px;
+	margin-right: 5px;
+}
+
 /* numButtons */
 .complete {
   background-color: green;
@@ -166,6 +172,7 @@ label {
 input[type=radio]:checked + label {
   color: white;
   background: grey;
+  font-weight: bold;
 }
 
 label + input[type=radio] + label {

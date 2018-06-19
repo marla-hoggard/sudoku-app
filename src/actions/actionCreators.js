@@ -51,6 +51,18 @@ export function erase(square) {
 	}
 }
 
+export function confirmGuesses() {
+	return {
+		type: types.CONFIRM_GUESSES
+	}
+}
+
+export function removeGuesses() {
+	return {
+		type: types.REMOVE_GUESSES
+	}
+}
+
 export function toggleRevealErrors() {
 	return {
 		type: types.TOGGLE_REVEAL_ERRORS
