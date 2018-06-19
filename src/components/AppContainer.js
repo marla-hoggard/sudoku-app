@@ -14,6 +14,7 @@ function mapStateToProps(state) {
 		revealErrors: state.revealErrors,
 		cheater: state.cheater,
 		numComplete: state.numComplete,
+		activeGame: state.activeGame,
 	}
 }
 

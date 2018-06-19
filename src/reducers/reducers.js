@@ -11,6 +11,7 @@ const initialState = {
 	revealErrors: false,
 	cheater: false,
 	numComplete: Array(9).fill(null),
+	activeGame: false,
 }
 
 function rootReducer(state = initialState, action) {
@@ -24,7 +25,8 @@ function rootReducer(state = initialState, action) {
 				puzzle: action.puzzle,
 				solution: action.solution,
 				gridStatus,
-				revealErrors: state.revealErrors
+				revealErrors: state.revealErrors,
+				activeGame: true,
 			}
 
 		case actionTypes.CHANGE_PEN:
@@ -48,6 +50,9 @@ function rootReducer(state = initialState, action) {
 
 		case actionTypes.REMOVE_GUESSES:
 			return removeGuessesReducer(state,action);
+
+		case actionTypes.TOGGLE_ACTIVE_GAME:
+			return { ...state, activeGame: !state.activeGame }
 
 		case actionTypes.TOGGLE_REVEAL_ERRORS:
 			return { ...state, revealErrors: !state.revealErrors }
@@ -266,6 +271,7 @@ function showSolutionReducer(state,action) {
 		gridStatus,
 		revealErrors: true,
 		cheater: true,
+		activeGame: false,
 	};
 }
 

@@ -1,10 +1,7 @@
-//import {connect} from 'react-redux';
-//import { bindActionCreators } from 'redux';
-//import * as actions from '../actions/actionCreators';
 import { PenMode, GridStatusOptions } from '../actions/actionTypes';
 import React from 'react';
 
-//import Sudoku from 'sudoku';
+import Timer from './Timer';
 import Grid from './Grid';
 import ButtonBar from './ButtonBar';
 import '../index.css';
@@ -113,8 +110,10 @@ export default class App extends React.Component {
 		return (
 			<div>
 				<div className="title">Play Sudoku!</div>
+				<Timer {...this.props} />
 				<Grid 
 					{...this.props}
+					paused={!props.activeGame && !props.cheater}
 					gameOver={gameOver} 
 					onClick={(i) => this.handleClick(i)}
 					onKeyDown={(e) => this.handleKeyPress(e)} />

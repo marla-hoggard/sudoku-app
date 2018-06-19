@@ -63,6 +63,12 @@ export function removeGuesses() {
 	}
 }
 
+export function toggleActiveGame() {
+	return {
+		type: types.TOGGLE_ACTIVE_GAME
+	}
+}
+
 export function toggleRevealErrors() {
 	return {
 		type: types.TOGGLE_REVEAL_ERRORS
