@@ -217,9 +217,14 @@ function confirmGuessesReducer(state,action) {
 
 function removeGuessesReducer(state,action) {
 	let puzzle = state.puzzle.slice();
+	let numComplete = state.numComplete.slice();
 	let gridStatus = [];
+	let numToCheck = [];
 	state.gridStatus.forEach((status,index) => {
 		if (status === 'guess') {
+			if (!numToCheck.includes(puzzle[index])) {
+				numToCheck.push(puzzle[index]);
+			}
 			puzzle[index] = null;
 			gridStatus.push(null);
 		}
@@ -227,10 +232,15 @@ function removeGuessesReducer(state,action) {
 			gridStatus.push(status);
 		}
 	});
+	//Check each number that had been guessed for completeness
+	numToCheck.forEach(num => {
+		numComplete[num-1] = checkNumComplete(num,puzzle);
+	});
 	return {
 		...state,
 		puzzle,
 		gridStatus,
+		numComplete,
 	}
 }
 
