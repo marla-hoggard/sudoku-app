@@ -175,6 +175,46 @@ label + input[type=radio] + label {
 .radio-group {
   border: solid 1px rgb(216, 216, 216);
   display: inline-block;
-  border-radius: 5%;
   overflow: hidden;
+}
+
+/* MEDIA QUERIES */
+@media (max-width: 400px) {
+	.grid {
+		width: 95vw;
+		height: 95vw;
+	}
+	.gridSquare {
+		width: calc(95vw / 9 - 1px);
+		height: calc(95vw / 9 - 1px);
+		line-height: calc(95vw / 9 - 1px);
+	}
+	.selected {
+		border: 3px solid green;
+		width: calc(95vw / 9 - 5px);
+		height: calc(95vw / 9 - 5px);
+		line-height: calc(95vw / 9 - 5px);
+	}
+	.note {
+		font-size: 40%;
+		height: 50%;
+		line-height: 50%;
+		width: 12.5%;
+		margin-top: 3px;
+	}
+	button {
+		height: 25px;
+	}
+	label {
+		line-height: 27px;
+	}
+	body {
+		background: yellow;
+	}
+}
+
+@media (max-width: 250px) {
+	.gridSquare {
+		font-size: calc(95vw / 14);
+	}
 }
