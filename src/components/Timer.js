@@ -5,11 +5,12 @@ export default class Timer extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			count: 0,
+			count: Number(sessionStorage.getItem('timer')) || 0,
 		}
 	}
 
 	tick = () => {
+		sessionStorage.setItem('timer', this.state.count + 1);
 		this.setState(prevState => {
 			return { 
 				count: prevState.count + 1,
@@ -38,16 +39,23 @@ export default class Timer extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
 		//console.log("Component Will Receive Props");
-		if (this.props.activeGame !== nextProps.activeGame) {
-			console.log("Component Will Receive Props");
-			if (nextProps.activeGame) {
+		if (this.props.gameID !== nextProps.gameID) {
+			console.log("New game detected in Will Receive Props");
+			console.log(this.props.gameID,nextProps.gameID);
+			this.resetTimer();
+			if (nextProps.running) {
+				this.startTimer();
+			}
+		}
+		else if (this.props.running !== nextProps.running) {
+			console.log("Component Will Receive Props - toggling timer");
+			if (nextProps.running) {
 				this.startTimer();
 			}
 			else {
 				this.stopTimer();
 			}
 		} 
-
 	}
 
 	componentWillUnmount() {
@@ -55,7 +63,7 @@ export default class Timer extends React.Component {
 	}
 
 	render() {
-		const button = this.props.activeGame ? 'Pause' : 'Resume';
+		const button = this.props.running ? 'Pause' : 'Resume';
 
 		//Convert count to time display
 		const count = this.state.count;
@@ -75,13 +83,13 @@ export default class Timer extends React.Component {
 			<div className="timer-row">
 				<button className="timer-button" onClick={() => { 
 					this.resetTimer(); 
-					this.props.newGame();
+					this.props.startNewGame();
 					this.startTimer();
 				}}>New Game</button>
 				<span className="timer">{displayTime}</span>	
 				<button className="timer-button" onClick={() => {
-					this.props.activeGame ? this.stopTimer() : this.startTimer();
-					this.props.toggleActiveGame();
+					this.props.running ? this.stopTimer() : this.startTimer();
+					this.props.toggleTimer();
 				}}>{button}</button>
 			</div>
 		);

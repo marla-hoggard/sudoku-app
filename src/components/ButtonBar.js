@@ -16,9 +16,7 @@ const ButtonBar = (props) => {
 	return (
 		<div className="buttons">
 			<div className="button-row">{numButtons}</div>
-
 			<div className="button-row radio-row">
-				<div><button onClick={props.newGame}>New Game</button></div>
 				<div className="radio-group">
 					<input type="radio" id="radio-pen" name="selector-pen" checked={penMode === PenMode.PEN} onChange={props.handlePenChange} />
 						<label htmlFor="radio-pen">Pen</label>

@@ -15,6 +15,7 @@ function mapStateToProps(state) {
 		cheater: state.cheater,
 		numComplete: state.numComplete,
 		activeGame: state.activeGame,
+		gameID: state.gameID,
 	}
 }
 

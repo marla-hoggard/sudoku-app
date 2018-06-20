@@ -21,6 +21,14 @@ export function newGame() {
 	}
 }
 
+export function restoreSession(session,gameID) {
+	return {
+		type: types.RESTORE_SESSION,
+		session,
+		gameID,
+	}
+}
+
 export function changePen(penType) {
 	return {
 		type: types.CHANGE_PEN,

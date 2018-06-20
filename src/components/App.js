@@ -92,7 +92,15 @@ export default class App extends React.Component {
 	}
 
 	componentDidMount() {
-		this.props.newGame();
+		const saved = JSON.parse(sessionStorage.getItem('sudoku'));
+		const gameID = JSON.parse(sessionStorage.getItem('gameID')) || 0;
+		//If there is a saved uncompleted puzzle, persist it
+		if (saved && (saved.puzzle.includes(null) || saved.gridStatus.includes('wrong'))) {
+			this.props.restoreSession(saved,gameID);
+		}
+		else {
+			this.props.newGame();
+		}
 	}
 
 	componentDidUpdate() {
@@ -110,15 +118,18 @@ export default class App extends React.Component {
 		return (
 			<div>
 				<div className="title">Play Sudoku!</div>
-				<Timer {...this.props} />
+				<Timer running={props.activeGame}
+					startNewGame={props.newGame}
+					toggleTimer={props.toggleActiveGame} 
+					gameID={props.gameID} />
 				<Grid 
-					{...this.props}
+					{...props}
 					paused={!props.activeGame && !props.cheater}
 					gameOver={gameOver} 
 					onClick={(i) => this.handleClick(i)}
 					onKeyDown={(e) => this.handleKeyPress(e)} />
 				<ButtonBar 
-					{...this.props}
+					{...props}
 					numButton={(i) => this.handleNumButton(i)}
 					handlePenChange={(e) => this.handlePenChange(e)}
 				/>

@@ -1,5 +1,6 @@
 /* action types */
 export const NEW_GAME = 'NEW_GAME';
+export const RESTORE_SESSION = 'RESTORE_SESSION';
 export const CHANGE_PEN = 'CHANGE_PEN';
 export const PEN_ENTRY = 'PEN_ENTRY';
 export const NOTE_ENTRY = 'NOTE_ENTRY';
