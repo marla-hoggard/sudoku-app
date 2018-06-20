@@ -5,11 +5,12 @@ export default class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			count: 0,
+			count: Number(sessionStorage.getItem('timer')) || 0,
 		}
 	}
 
 	tick = () => {
+		sessionStorage.setItem('timer', this.state.count + 1);
 		this.setState(prevState => {
 			return { 
 				count: prevState.count + 1,
@@ -32,8 +33,8 @@ export default class App extends React.Component {
 		this.setState({ count: 0});
 	}
 
-
 	componentDidMount() {
+		console.log("Timer Did Mount");
 		this.startTimer();
 	}
 
@@ -49,6 +50,7 @@ export default class App extends React.Component {
 	}
 
 	componentWillUnmount() {
+		console.log("Timer Will Unmount");
 		this.resetTimer();
 	}
 

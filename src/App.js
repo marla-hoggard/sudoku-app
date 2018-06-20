@@ -16,7 +16,6 @@ export default class App extends React.Component {
 			selected: null,
 			penMode: 'pen',
 			revealErrors: false,
-			optionsMode: false,
 			cheater: false,
 			numComplete: Array(9).fill(null),
 			activeGame: false,
@@ -37,6 +36,13 @@ export default class App extends React.Component {
 
 		let gridStatus = puzzle.map(value => value != null ? 'provided' : null);
 
+		this.updateSessionStorage({
+			puzzle,
+			solution,
+			gridStatus,
+			options: Array(81).fill(null),
+		});
+
 		this.setState({
 			puzzle,
 			solution,
@@ -44,7 +50,6 @@ export default class App extends React.Component {
 			options: Array(81).fill(null),
 			selected: null,
 			penMode: 'pen', //pen vs notes
-			optionsMode: false,
 			cheater: false,
 			numComplete: Array(9).fill(null),
 			activeGame: true,
@@ -152,6 +157,13 @@ export default class App extends React.Component {
 		if (prev) {
 			numComplete[prev-1] = this.checkNumComplete(prev,puzzle);
 		}
+		this.updateSessionStorage({
+			puzzle,
+			solution: this.state.solution,
+			gridStatus,
+			options: this.state.options,
+		});
+
 		this.setState({
 			puzzle,
 			gridStatus,
@@ -179,6 +191,14 @@ export default class App extends React.Component {
 			selectedOptions = [num];
 		}
 		options[i] = selectedOptions;
+
+		this.updateSessionStorage({
+			puzzle: this.state.puzzle,
+			solution: this.state.solution,
+			gridStatus: this.state.gridStatus,
+			options,
+		});
+
 		this.setState({
 			options,
 		});
@@ -195,6 +215,12 @@ export default class App extends React.Component {
 			gridStatus[i] = null;
 			let numComplete = this.state.numComplete.slice();
 			numComplete[num-1] = this.checkNumComplete(num,puzzle);
+			this.updateSessionStorage({
+				puzzle,
+				solution: this.state.solution,
+				gridStatus,
+				options: this.state.options,
+			});
 			this.setState({
 				puzzle,
 				gridStatus,
@@ -205,10 +231,19 @@ export default class App extends React.Component {
 		else {
 			let options = this.state.options.slice();
 			options[i] = null;
+
+			this.updateSessionStorage({
+				puzzle: this.state.puzzle,
+				solution: this.state.solution,
+				gridStatus: this.state.gridStatus,
+				options,
+			});
+
 			this.setState({
 				options,
 			});
 		}
+
 	}
 
 	//Returns null, 'complete' or 'too-many' based on instances of num in puzzle
@@ -237,6 +272,14 @@ export default class App extends React.Component {
 				return status;
 			}
 		});
+
+		this.updateSessionStorage({
+			puzzle: this.state.puzzle,
+			solution: this.state.solution,
+			gridStatus,
+			options: this.state.options,
+		});
+
 		this.setState({
 			gridStatus,
 		});
@@ -263,6 +306,14 @@ export default class App extends React.Component {
 		numToCheck.forEach(num => {
 			numComplete[num-1] = this.checkNumComplete(num,puzzle);
 		});
+
+		this.updateSessionStorage({
+			puzzle,
+			solution: this.state.solution,
+			gridStatus,
+			options: this.state.options,
+		});
+
 		this.setState({
 			puzzle,
 			gridStatus,
@@ -289,6 +340,13 @@ export default class App extends React.Component {
 		const puzzle = this.state.puzzle.map((value,index) => {
 			return value === this.state.solution[index] ? value : null;
 		});
+		this.updateSessionStorage({
+			puzzle,
+			solution: this.state.solution,
+			gridStatus: this.state.gridStatus,
+			options: this.state.options,
+		});
+
 		this.setState({ puzzle });
 	}
 
@@ -307,6 +365,14 @@ export default class App extends React.Component {
 			else if (count > 9) {
 				numComplete[puzzle[selected]-1] = 'too-many';
 			}
+
+			this.updateSessionStorage({
+				puzzle,
+				solution: this.state.solution,
+				gridStatus,
+				options: this.state.options,
+			});
+
 			this.setState({
 				puzzle,
 				gridStatus,
@@ -322,6 +388,14 @@ export default class App extends React.Component {
 		const puzzle = this.state.solution.slice();
 		console.log(gridStatus);
 		console.log(puzzle);
+
+		this.updateSessionStorage({
+			puzzle,
+			solution: this.state.solution,
+			gridStatus,
+			options: this.state.options,
+		});
+
 		this.setState({
 			puzzle,
 			gridStatus,
@@ -331,8 +405,42 @@ export default class App extends React.Component {
 		})
 	}
 
+	restoreSession = () => {
+		if (sessionStorage.getItem('sudoku')) {
+			const storage = JSON.parse(sessionStorage.getItem('sudoku'));
+			console.log(storage);
+			let numComplete = [];
+			for (var i = 1; i <= 9; i++) {
+				numComplete.push(this.checkNumComplete(i,storage.puzzle))
+			}
+			this.setState({
+				puzzle: storage.puzzle,
+				solution: storage.solution,
+				gridStatus: storage.gridStatus,
+				options: storage.options,
+				selected: null,
+				penMode: 'pen', 
+				cheater: false,
+				numComplete,
+				activeGame: true,
+			});
+			return true;
+		}
+		else {
+			console.log("Nothing in sessionStorage");
+			return false;
+		}
+	}
+
+	updateSessionStorage = (storage) => {
+		sessionStorage.setItem('sudoku',JSON.stringify(storage));
+	}
+
 	componentDidMount() {
-		this.newGame();
+		const saved = this.restoreSession();
+		if (!saved) {
+			this.newGame();
+		}
 	}
 
 	componentDidUpdate() {
